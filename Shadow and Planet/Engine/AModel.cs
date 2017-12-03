@@ -15,7 +15,7 @@ namespace Engine
     {
         public XnaModel XNAModel { get; private set; }
         public bool Visable { get => m_Visable; set => m_Visable = value; }
-
+        public Vector3 DefuseColor = Vector3.Zero;
         Texture2D XNATexture;
         private Matrix[] ModelTransforms;
         private Matrix BaseWorld;
@@ -101,10 +101,15 @@ namespace Engine
                     foreach (ModelMeshPart meshPart in mesh.MeshParts)
                     {
                         BasicEffect effect = (BasicEffect)meshPart.Effect;
-                        effect.Texture = XNATexture ?? effect.Texture; //Replace texture if XNATexture is not null.
+
+                        //effect.Texture = XNATexture ?? effect.Texture; //Replace texture if XNATexture is not null.
                         effect.EnableDefaultLighting();
+                        if (DefuseColor != Vector3.Zero)
+                            effect.DiffuseColor = DefuseColor;
                         effect.PreferPerPixelLighting = true;
                         effect.World = BaseWorld;
+                        if (XNATexture != null)
+                            effect.Texture = XNATexture;// ?? effect.Texture; //Replace texture if XNATexture is not null.
                         Services.Camera.Draw(effect);
                     }
 

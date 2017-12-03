@@ -16,13 +16,17 @@ namespace Shadow_and_Planet.Entities
     {
         List<Asteroid> Asteroids;
         List<Chunk> Chunks;
+        List<Mod> RockRadar;
         Player PlayerRef;
         PirateControl PiratesRef;
+
+        XnaModel RockRadarModel;
 
         public AsteroidControl(Game game, Player player, PirateControl pirate) : base(game)
         {
             Asteroids = new List<Asteroid>();
             Chunks = new List<Chunk>();
+            RockRadar = new List<Mod>();
 
             PlayerRef = player;
             PiratesRef = pirate;
@@ -43,7 +47,7 @@ namespace Shadow_and_Planet.Entities
             for (int i = 0; i < 10; i++)
             {
                 Asteroids.Add(new Asteroid(Game, PlayerRef, PiratesRef));
-                PlayerRef.ActivateRockRadar();
+                ActivateRockRadar();
 
                 if (Services.RandomMinMax(0, 10) > 5)
                 {
@@ -66,12 +70,13 @@ namespace Shadow_and_Planet.Entities
 
         public void LoadContent()
         {
-
+            RockRadarModel = PlayerRef.Load("cube");
         }
 
         public override void Update(GameTime gameTime)
         {
             CheckOtherAsteroidCollusion();
+            int i = 0;
 
             foreach (Asteroid rock in Asteroids)
             {
@@ -80,9 +85,22 @@ namespace Shadow_and_Planet.Entities
                     rock.Hit = false;
                     EjectChunk(rock);
                 }
+
+                Vector3 offset = PlayerRef.
+                    SetVelocity(PlayerRef.AngleFromVectors(PlayerRef.Position, rock.Position), 80);
+                offset.Z = 250;
+                RockRadar[i].Position = PlayerRef.Position + offset;
+                i++;
             }
 
             base.Update(gameTime);
+        }
+
+        void ActivateRockRadar()
+        {
+            RockRadar.Add(new Mod(Game));
+            RockRadar.Last().SetModel(RockRadarModel);
+            RockRadar.Last().Scale = 3;
         }
 
         void CheckOtherAsteroidCollusion()
@@ -124,8 +142,9 @@ namespace Shadow_and_Planet.Entities
                 Chunks.Last().PlayerRef = PlayerRef;
             }
 
+            Chunks[freeChunk].Active = true;
             Chunks[freeChunk].Position = rock.Position;
-            Chunks[freeChunk].Velocity = new Vector3(Services.RandomMinMax(-150, 150), Services.RandomMinMax(-150, 150), 0);
+            Chunks[freeChunk].Velocity = Chunks[0].SetRandomVelocity(150);
             Chunks[freeChunk].RotationVelocity = new Vector3(Services.RandomMinMax(-1, 1), Services.RandomMinMax(-1, 1), 0);
         }
     }

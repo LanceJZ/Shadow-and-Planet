@@ -215,7 +215,7 @@ namespace Engine
             return false;
         }
         /// <summary>
-        /// Returns a Vector2 direction of travel from angle and magnitude.
+        /// Returns a Vector3 direction of travel from angle and magnitude.
         /// </summary>
         /// <param name="angle"></param>
         /// <param name="magnitude"></param>
@@ -278,10 +278,10 @@ namespace Engine
                 Services.RandomMinMax(-Services.WindowHeight * 0.45f, Services.WindowHeight * 0.45f));
         }
 
-        public float AimAtTarget(Vector3 origin, Vector3 target, float facingAngle, float magnitude)
+        public float AimAtTarget(Vector3 target, float facingAngle, float magnitude)
         {
             float turnVelocity = 0;
-            float targetAngle = AngleFromVectors(origin, target);
+            float targetAngle = AngleFromVectors(Position, target);
             float targetLessFacing = targetAngle - facingAngle;
             float facingLessTarget = facingAngle - targetAngle;
 

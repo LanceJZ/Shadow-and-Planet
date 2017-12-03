@@ -16,11 +16,15 @@ namespace Shadow_and_Planet.Entities
     {
         Player PlayerRef;
         public List<Pirate> Pirates;
+        List<Mod> PirateRadar;
+
+        XnaModel PirateRadarModel;
 
         public PirateControl(Game game, Player player) : base(game)
         {
             PlayerRef = player;
             Pirates = new List<Pirate>();
+            PirateRadar = new List<Mod>();
 
             game.Components.Add(this);
         }
@@ -38,7 +42,7 @@ namespace Shadow_and_Planet.Entities
             for (int i = 0; i < 4; i++)
             {
                 Pirates.Add(new Pirate(Game, PlayerRef));
-                PlayerRef.ActivatePirateRadar();
+                ActivatePirateRadar();
 
                 if (Services.RandomMinMax(0, 10) > 5)
                 {
@@ -55,7 +59,7 @@ namespace Shadow_and_Planet.Entities
 
         public void LoadContent()
         {
-
+            PirateRadarModel = PlayerRef.Load("cube - pirate");
         }
 
         public override void Update(GameTime gameTime)
@@ -65,15 +69,36 @@ namespace Shadow_and_Planet.Entities
             base.Update(gameTime);
         }
 
+        void ActivatePirateRadar()
+        {
+            PirateRadar.Add(new Mod(Game));
+            PirateRadar.Last().SetModel(PirateRadarModel);
+            PirateRadar.Last().DefuseColor = new Vector3(1, 0, 0);
+            PirateRadar.Last().Scale = 4;
+        }
+
+        void DeactivatePirateRadar(int number)
+        {
+            PirateRadar[number].Active = false;
+        }
+
         void CheckOtherPirateCollusion()
         {
             for (int i = 0; i < Pirates.Count; i++)
             {
                 if (Pirates[i].Hit)
                 {
-                    PlayerRef.DeactivatePirateRadar(i);
+                    DeactivatePirateRadar(i);
                     Pirates[i].Active = false;
                     Pirates[i].Hit = false;
+                }
+
+                if (Pirates[i].Active)
+                {
+                    Vector3 offset = PlayerRef.
+                        SetVelocity(PlayerRef.AngleFromVectors(PlayerRef.Position, Pirates[i].Position), 60);
+                    offset.Z = 250;
+                    PirateRadar[i].Position = PlayerRef.Position + offset;
                 }
             }
 

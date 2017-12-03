@@ -43,8 +43,7 @@ namespace Shadow_and_Planet.Entities
 
         public override void BeginRun()
         {
-            Velocity = new Vector3(Services.RandomMinMax(-10, 10),
-                Services.RandomMinMax(-10, 10), 0);
+            Velocity = SetRandomVelocity(25);
 
             base.BeginRun();
         }

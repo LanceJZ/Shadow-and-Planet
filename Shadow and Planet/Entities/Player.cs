@@ -16,19 +16,17 @@ namespace Shadow_and_Planet.Entities
     {
         Numbers OreCollected;
         Numbers Score;
+        Numbers Health;
         Words OreText;
         Words ScoreText;
+        Words HealthText;
 
         KeyboardState KeyState;
         KeyboardState KeyStateOld;
 
         Shot[] Shots = new Shot[5];
 
-        List<Mod> RockRadar;
-        List<Mod> PirateRadar;
-
-        XnaModel RockRadarModel;
-        XnaModel PirateRadarModel;
+        Mod Flame;
 
         public int OreinHold;
         public bool HoldFull;
@@ -37,11 +35,11 @@ namespace Shadow_and_Planet.Entities
         {
             OreCollected = new Numbers(game);
             Score = new Numbers(game);
+            Health = new Numbers(game);
             OreText = new Words(game);
             ScoreText = new Words(game);
-
-            RockRadar = new List<Mod>();
-            PirateRadar = new List<Mod>();
+            HealthText = new Words(game);
+            Flame = new Mod(game);
         }
 
         public override void Initialize()
@@ -57,14 +55,12 @@ namespace Shadow_and_Planet.Entities
         public override void LoadContent()
         {
             LoadModel("SandP-Player");
+            Flame.LoadModel("SandP-PlayerFlame");
 
             for (int i = 0; i < 5; i++)
             {
                 Shots[i] = new Shot(Game);
             }
-
-            RockRadarModel = Load("cube");
-            PirateRadarModel = Load("cube");
         }
 
         public override void BeginRun()
@@ -74,11 +70,15 @@ namespace Shadow_and_Planet.Entities
             OreCollected.ProcessNumber(OreinHold, Vector3.Zero, 2);
             OreCollected.Position.Z = 150;
 
+            Flame.AddAsChild(this, true, false);
+            Flame.Position.X = -25;
+
             base.BeginRun();
         }
 
         public override void Update(GameTime gameTime)
         {
+            Rotation.Y = 0;
             CheckEdge();
             GetInput();
 
@@ -109,23 +109,6 @@ namespace Shadow_and_Planet.Entities
             Velocity = (Velocity * 0.1f) * -1;
             Velocity += velocity * 0.75f;
             Velocity += SetVelocityFromAngle(AngleFromVectors(position, Position), 75);
-        }
-
-        public void ActivateRockRadar()
-        {
-            RockRadar.Add(new Mod(Game));
-            RockRadar.Last().SetModel(RockRadarModel);
-        }
-
-        public void ActivatePirateRadar()
-        {
-            PirateRadar.Add(new Mod(Game));
-            PirateRadar.Last().SetModel(PirateRadarModel);
-        }
-
-        public void DeactivatePirateRadar(int number)
-        {
-            PirateRadar[number].Active = false;
         }
 
         /// <summary>
@@ -186,7 +169,10 @@ namespace Shadow_and_Planet.Entities
             if (KeyState.IsKeyDown(Keys.Up))
                 ThrustOn();
             else
+            {
                 Acceleration = Vector3.Zero;
+                Flame.Visable = false;
+            }
 
             if (KeyState.IsKeyDown(Keys.Right))
                 RotateRight();
@@ -209,6 +195,7 @@ namespace Shadow_and_Planet.Entities
         void ThrustOn()
         {
             Acceleration = SetVelocity3FromAngleZ(Rotation.Z, 300);
+            Flame.Visable = true;
         }
 
         void RotateRight()

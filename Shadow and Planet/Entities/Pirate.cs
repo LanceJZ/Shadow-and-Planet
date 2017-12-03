@@ -13,9 +13,11 @@ namespace Shadow_and_Planet.Entities
 
     public class Pirate : Mod
     {
+        List<Missile> Missiles;
         Player PlayerRef;
         Timer ChaseTimer;
         Timer BumpTimer;
+        Timer FireTimer;
 
         Vector3 NewHeading = Vector3.Zero;
 
@@ -26,6 +28,8 @@ namespace Shadow_and_Planet.Entities
             PlayerRef = player;
             ChaseTimer = new Timer(game, 10);
             BumpTimer = new Timer(game);
+            FireTimer = new Timer(game);
+            Missiles = new List<Missile>();
         }
 
         public override void Initialize()
@@ -61,8 +65,14 @@ namespace Shadow_and_Planet.Entities
                     if (ChaseTimer.Expired)
                         ChasePlayer();
 
-                    RotationVelocity.Z = AimAtTarget(Position, NewHeading, Rotation.Z, MathHelper.PiOver4);
+                    RotationVelocity.Z = AimAtTarget(NewHeading, Rotation.Z, MathHelper.PiOver4);
                     Velocity = SetVelocityFromAngle(Rotation.Z, 100);
+
+                    if (FireTimer.Expired)
+                    {
+                        FireTimer.Reset(Services.RandomMinMax(3, 10));
+                        FireMissile();
+                    }
 
                     if (BumpTimer.Enabled)
                     {
@@ -90,6 +100,11 @@ namespace Shadow_and_Planet.Entities
             NewHeading = new Vector3(Services.RandomMinMax(-2000, 2000), Services.RandomMinMax(-1000, 1000), 0);
             BumpTimer.Enabled = true;
             BumpTimer.Reset(Services.RandomMinMax(2, 6));
+        }
+
+        void FireMissile()
+        {
+
         }
 
         void CheckEdge()
