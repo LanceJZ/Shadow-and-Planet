@@ -41,7 +41,7 @@ namespace Shadow_and_Planet.Entities
 
         public override void BeginRun()
         {
-            OreText.ProcessWords("BASE ORE", Vector3.Zero, 2);
+            OreText.ProcessWords("BASE_ORE", Vector3.Zero, 2);
             OreText.Position.Z = 150;
             OreAmount.ProcessNumber(OreOnBase, Vector3.Zero, 2);
             OreAmount.Position.Z = 150;

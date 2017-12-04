@@ -16,8 +16,8 @@ namespace Engine
     {
         XnaModel[] WordModels = new XnaModel[27];
         List<Mod> WordEs = new List<Mod>();
-        string WordString;
         float Scale;
+        int TextSize;
         public Vector3 Position = Vector3.Zero;
 
         public Words (Game game) : base(game)
@@ -52,7 +52,6 @@ namespace Engine
         public void ProcessWords(string words, Vector3 locationStart, float scale)
         {
             Position = locationStart;
-            WordString = words;
             Scale = scale;
 
             UpdateWords(words);
@@ -60,10 +59,10 @@ namespace Engine
 
         public void UpdateWords(string words)
         {
-            int textSize = WordString.Length;
+            TextSize = words.Length;
             DeleteWords();
 
-            foreach (char letter in WordString)
+            foreach (char letter in words)
             {
                 if ((int)letter > 64 && (int)letter < 91 || (int)letter == 95)
                 {
@@ -90,7 +89,7 @@ namespace Engine
             foreach (Mod letter in WordEs)
             {
                 letter.Position = Position - new Vector3(space, 0, 0);
-                space -= Scale * 11;
+                space -= Scale * 11.5f;
             }
         }
 

@@ -15,10 +15,14 @@ namespace Shadow_and_Planet.Entities
     {
         PositionedObject TargetRef;
         Timer LifeTimer;
+        SoundEffect HitSound;
+        Explode Explosion;
 
         public Missile(Game game) : base(game)
         {
             LifeTimer = new Timer(game);
+            Explosion = new Explode(game);
+
             LoadContent();
         }
 
@@ -31,6 +35,8 @@ namespace Shadow_and_Planet.Entities
         public override void LoadContent()
         {
             LoadModel("SandP-Missile");
+            HitSound = LoadSoundEffect("MissileHit");
+
             BeginRun();
         }
 
@@ -71,6 +77,8 @@ namespace Shadow_and_Planet.Entities
         {
             if (CirclesIntersect(TargetRef))
             {
+                HitSound.Play();
+                Explosion.Spawn(Position, Radius * 0.25f);
                 TargetRef.Hit = true;
                 Active = false;
             }

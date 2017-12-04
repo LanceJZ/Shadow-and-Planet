@@ -15,7 +15,7 @@ namespace Engine
     {
         public XnaModel XNAModel { get; private set; }
         public bool Visable { get => m_Visable; set => m_Visable = value; }
-        public Vector3 DefuseColor = Vector3.Zero;
+        public Vector3 DefuseColor = new Vector3(1,1,1);
         Texture2D XNATexture;
         private Matrix[] ModelTransforms;
         private Matrix BaseWorld;

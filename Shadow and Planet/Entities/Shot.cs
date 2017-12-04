@@ -14,10 +14,13 @@ namespace Shadow_and_Planet.Entities
     public class Shot : Mod
     {
         Timer LifeTimer;
+        Explode Explosion;
+        SoundEffect HitSound;
 
         public Shot(Game game) : base(game)
         {
             LifeTimer = new Timer(game);
+            Explosion = new Explode(game);
         }
 
         public override void Initialize()
@@ -36,6 +39,7 @@ namespace Shadow_and_Planet.Entities
             base.LoadContent();
 
             LoadModel("cube");
+            HitSound = LoadSoundEffect("ShotHit");
         }
 
         public override void Update(GameTime gameTime)
@@ -55,6 +59,13 @@ namespace Shadow_and_Planet.Entities
             Velocity = direction;
             Vector3 acc = Acceleration;
             LifeTimer.Reset(timer);
+        }
+
+        public void Hit()
+        {
+            Active = false;
+            Explosion.Spawn(Position, Radius * 0.25f);
+            HitSound.Play();
         }
 
         void CheckEdge()

@@ -13,7 +13,7 @@
     <AssemblyName>Shadow and Planet</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>DesktopGL</MonoGamePlatform>
-    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
@@ -74,6 +74,8 @@
     <Compile Include="Entities\Base.cs" />
     <Compile Include="Entities\Chest.cs" />
     <Compile Include="Entities\Chunk.cs" />
+    <Compile Include="Entities\Explode.cs" />
+    <Compile Include="Entities\ExplodeParticle.cs" />
     <Compile Include="Entities\LavaLamp.cs" />
     <Compile Include="Entities\Missile.cs" />
     <Compile Include="Entities\Pirate.cs" />

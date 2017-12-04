@@ -8,10 +8,10 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Shadow and Planet")]
 [assembly: AssemblyProduct("Shadow and Planet")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyDescription("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyCopyright("Copyright ©  2017")]
-[assembly: AssemblyTrademark("")]
+[assembly: AssemblyDescription("Ludum Dare 40 Game Jam")]
+[assembly: AssemblyCompany("Panther Games")]
+[assembly: AssemblyCopyright("NA")]
+[assembly: AssemblyTrademark("NA")]
 [assembly: AssemblyCulture("")]
 
 // Setting ComVisible to false makes the types in this assembly not visible 

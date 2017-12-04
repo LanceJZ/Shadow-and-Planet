@@ -19,6 +19,7 @@ namespace Shadow_and_Planet.Entities
         List<Mod> PirateRadar;
         List<LavaLamp> LavaLamps;
         List<Chest> Chests;
+        List<Explode> Explosions;
 
         XnaModel PirateRadarModel;
 
@@ -31,6 +32,8 @@ namespace Shadow_and_Planet.Entities
             PirateRadar = new List<Mod>();
             LavaLamps = new List<LavaLamp>();
             Chests = new List<Chest>();
+            Explosions = new List<Explode>();
+
             game.Components.Add(this);
         }
 
@@ -48,13 +51,13 @@ namespace Shadow_and_Planet.Entities
 
         public void LoadContent()
         {
-            PirateRadarModel = PlayerRef.Load("cube - pirate");
+            PirateRadarModel = PlayerRef.Load("cube");
             LavaLampSound = PlayerRef.LoadSoundEffect("LavaLampDrop");
         }
 
         public override void Update(GameTime gameTime)
         {
-            CheckOtherPirateCollusion();
+            CheckPirateCollusion();
 
             int PiratesActive = 0;
 
@@ -64,7 +67,7 @@ namespace Shadow_and_Planet.Entities
                     PiratesActive++;
             }
 
-            if (PlayerRef.Chests > PiratesActive)
+            if (PlayerRef.Chests + 1 > PiratesActive)
                 SpawnPirate();
 
             base.Update(gameTime);
@@ -89,7 +92,7 @@ namespace Shadow_and_Planet.Entities
 
         public void NewGame()
         {
-            SpawnPirate();
+
         }
 
         public void GameOver()
@@ -113,17 +116,42 @@ namespace Shadow_and_Planet.Entities
             PirateRadar[number].Active = false;
         }
 
-        void CheckOtherPirateCollusion()
+        void SpawnExploision(Vector3 position, float radius)
+        {
+            bool spawnNew = true;
+            int freeExplosion = Explosions.Count;
+
+            for (int i = 0; i < Explosions.Count; i++)
+            {
+                if (!Explosions[i].Active)
+                {
+                    spawnNew = false;
+                    freeExplosion = i;
+                    break;
+                }
+            }
+
+            if (spawnNew)
+            {
+                Explosions.Add(new Explode(Game));
+            }
+
+            Explosions[freeExplosion].Spawn(position, radius);
+        }
+
+        void CheckPirateCollusion()
         {
             for (int i = 0; i < Pirates.Count; i++)
             {
                 if (Pirates[i].Hit && Pirates[i].Active)
                 {
+                    SpawnExploision(Pirates[i].Position, Pirates[i].Radius * 0.25f);
                     DeactivatePirateRadar(i);
                     Pirates[i].Active = false;
                     Pirates[i].Hit = false;
 
-                    SpawnChest(Pirates[i].Position);
+                    if (Services.RandomMinMax(1, 6) > 4)
+                        SpawnChest(Pirates[i].Position);
 
                     if (Services.RandomMinMax(1, 100) > 90)
                         SpawnLavaLamp(Pirates[i].Position);

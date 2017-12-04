@@ -22,6 +22,7 @@ namespace Shadow_and_Planet.Entities
         SoundEffect OreSound;
         SoundEffect DockSound;
         SoundEffect UnDockSound;
+        SoundEffect ShotHitSound;
 
         Base BaseRef;
         Numbers OreCollected;
@@ -34,6 +35,7 @@ namespace Shadow_and_Planet.Entities
         Words ChestCollectedText;
         List<Mod> HealthBar;
         XnaModel HealthModel;
+        Explode Explosion;
 
         KeyboardState KeyState;
         KeyboardState KeyStateOld;
@@ -68,6 +70,7 @@ namespace Shadow_and_Planet.Entities
             DockTimer = new Timer(game);
             ThrustTimer = new Timer(game);
             HealthBar = new List<Mod>();
+            Explosion = new Explode(game);
         }
 
         public override void Initialize()
@@ -76,7 +79,8 @@ namespace Shadow_and_Planet.Entities
 
             Radius = 20;
             Scale = 1;
-            BaseRadar.Scale = 1.5f;
+            BaseRadar.Scale = 5f;
+            BaseRadar.DefuseColor = new Vector3(0.5f, 0.45f, 0.55f);
 
             base.Initialize();
         }
@@ -92,7 +96,7 @@ namespace Shadow_and_Planet.Entities
             }
 
             BaseRadar.LoadModel("cube");
-            HealthModel = Load("cube - green");
+            HealthModel = Load("cube");
 
             ThrustSound = LoadSoundEffect("Thrust");
             ThrustTimer.Amount = (float)ThrustSound.Duration.TotalSeconds;
@@ -104,7 +108,7 @@ namespace Shadow_and_Planet.Entities
             OreSound = LoadSoundEffect("PickupChunk");
             DockSound = LoadSoundEffect("Dock");
             UnDockSound = LoadSoundEffect("UnDock");
-
+            ShotHitSound = LoadSoundEffect("PlayerShotHit");
         }
 
         public override void BeginRun()
@@ -173,10 +177,6 @@ namespace Shadow_and_Planet.Entities
                     CheckEdge();
                     GetInput();
                     CheckDocking();
-                    Vector3 offset = SetVelocity(AngleFromVectors(Position, BaseRef.Position), 45);
-                    offset.Z = 250;
-                    BaseRadar.Position = Position + offset;
-
                 }
 
                 base.Update(gameTime);
@@ -195,6 +195,13 @@ namespace Shadow_and_Planet.Entities
                 ChestCollected.Position.Y = Position.Y + 400;
                 ChestCollected.UpdatePosition();
 
+                if (!Docked)
+                {
+                    Vector3 offset = SetVelocity(AngleFromVectors(Position, BaseRef.Position), 40);
+                    offset.Z = 250;
+                    BaseRadar.Position = Position + offset;
+                }
+
                 BaseRef.Update(gameTime);
             }
         }
@@ -202,6 +209,7 @@ namespace Shadow_and_Planet.Entities
         public void Dead()
         {
             DeadSound.Play();
+            Explosion.Spawn(Position, Radius * 0.25f);
             Active = false;
             Flame.Active = false;
             BaseRadar.Active = false;
@@ -227,7 +235,7 @@ namespace Shadow_and_Planet.Entities
             ChestCollected.UpdateNumber(Chests);
         }
 
-        public void Bumped(Vector3 position, Vector3 velocity)
+        public void Bumped(Vector3 position, Vector3 velocity) //TODO: Make this part of PositionedObject class.
         {
             Acceleration = Vector3.Zero;
             Velocity = (Velocity * 0.1f) * -1;
@@ -238,17 +246,18 @@ namespace Shadow_and_Planet.Entities
         /// <summary>
         /// Return true if a shot hit object.
         /// </summary>
-        /// <param name="po">Object to be tested against.</param>
+        /// <param name="target">Object to be tested against.</param>
         /// <returns>true if hit</returns>
-        public bool CheckShotCollusions(PositionedObject po) //TODO: Use this in other games.
+        public bool CheckShotCollusions(PositionedObject target) //TODO: Use this in other games.
         {
             foreach (Shot shot in Shots)
             {
                 if (shot.Active)
                 {
-                    if (shot.CirclesIntersect(po))
+                    if (shot.CirclesIntersect(target))
                     {
-                        shot.Active = false;
+                        //ShotHitSound.Play();
+                        shot.Hit();
                         return true;
                     }
                 }

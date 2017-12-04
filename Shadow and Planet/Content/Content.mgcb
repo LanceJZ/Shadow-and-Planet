@@ -811,25 +811,6 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/SandP-Pirate.obj
 
-#begin Models/cube - pirate.3DS
-/importer:OpenAssetImporter
-/processor:ModelProcessor
-/processorParam:ColorKeyColor=0,0,0,0
-/processorParam:ColorKeyEnabled=True
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=1
-/processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=Compressed
-/build:Models/cube - pirate.3DS
-
 #begin Models/SandP-Missile.obj
 /importer:OpenAssetImporter
 /processor:ModelProcessor
@@ -925,25 +906,6 @@
 /processorParam:TextureFormat=Compressed
 /build:Models/SandP-Base.obj
 
-#begin Models/cube - green.3DS
-/importer:OpenAssetImporter
-/processor:ModelProcessor
-/processorParam:ColorKeyColor=0,0,0,0
-/processorParam:ColorKeyEnabled=True
-/processorParam:DefaultEffect=BasicEffect
-/processorParam:GenerateMipmaps=True
-/processorParam:GenerateTangentFrames=False
-/processorParam:PremultiplyTextureAlpha=True
-/processorParam:PremultiplyVertexColors=True
-/processorParam:ResizeTexturesToPowerOfTwo=False
-/processorParam:RotationX=0
-/processorParam:RotationY=0
-/processorParam:RotationZ=0
-/processorParam:Scale=1
-/processorParam:SwapWindingOrder=False
-/processorParam:TextureFormat=Compressed
-/build:Models/cube - green.3DS
-
 #begin Sounds/Thrust.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
@@ -1021,4 +983,22 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Sounds/PirateBump.wav
+
+#begin Sounds/PlayerShotHit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/PlayerShotHit.wav
+
+#begin Sounds/MissileHit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/MissileHit.wav
+
+#begin Sounds/ShotHit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/ShotHit.wav
 

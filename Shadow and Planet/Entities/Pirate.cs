@@ -26,6 +26,7 @@ namespace Shadow_and_Planet.Entities
         SoundEffect ExplodSound;
         SoundEffect HitSound;
         SoundEffect BumpSound;
+        SoundEffect MissileSound;
 
         Vector3 NewHeading = Vector3.Zero;
 
@@ -57,10 +58,11 @@ namespace Shadow_and_Planet.Entities
         public override void LoadContent()
         {
             LoadModel("SandP-Pirate");
-            HealthModel = Load("cube - green");
+            HealthModel = Load("cube");
             ExplodSound = LoadSoundEffect("PirateExplode");
             HitSound = LoadSoundEffect("PirateHit");
             BumpSound = LoadSoundEffect("PirateBump");
+            MissileSound = LoadSoundEffect("PirateMissile");
 
             BeginRun();
         }
@@ -88,6 +90,7 @@ namespace Shadow_and_Planet.Entities
                         RotationVelocity.X = 0;
                         RotationVelocity.Y = 0;
                         BumpTimer.Enabled = false;
+                        FireTimer.Reset();
                     }
 
                     if (ChaseTimer.Expired)
@@ -215,6 +218,7 @@ namespace Shadow_and_Planet.Entities
 
         void FireMissile()
         {
+            MissileSound.Play();
             bool spawnNew = true;
             int freeOne = Missiles.Count;
 
