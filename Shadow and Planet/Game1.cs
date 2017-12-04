@@ -18,6 +18,7 @@ namespace Shadow_and_Planet
         SpriteBatch SpriteBatch;
 
         Player ThePlayer;
+        Base TheBase;
         Background TheBackground;
         AsteroidControl Asteroids;
         PirateControl Pirates;
@@ -37,7 +38,8 @@ namespace Shadow_and_Planet
             IsFixedTimeStep = false;
             Content.RootDirectory = "Content";
 
-            ThePlayer = new Player(this);
+            TheBase = new Base(this);
+            ThePlayer = new Player(this, TheBase);
             Pirates = new PirateControl(this, ThePlayer);
             TheBackground = new Background(this);
             Asteroids = new AsteroidControl(this, ThePlayer, Pirates);
@@ -106,6 +108,16 @@ namespace Shadow_and_Planet
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
                 Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            if (!ThePlayer.Active)
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.Space))
+                {
+                    ThePlayer.NewGame();
+                    Pirates.NewGame();
+                    Asteroids.NewGame();
+                }
+            }
 
             // TODO: Add your update logic here
 

@@ -13,11 +13,11 @@ namespace Shadow_and_Planet.Entities
 
     public class Chunk : Mod
     {
-        public Player PlayerRef;
+        Player PlayerRef;
 
-        public Chunk(Game game) : base(game)
+        public Chunk(Game game, Player player) : base(game)
         {
-
+            PlayerRef = player;
         }
 
         public override void Initialize()
@@ -56,19 +56,41 @@ namespace Shadow_and_Planet.Entities
             base.Update(gameTime);
         }
 
+        public void Bumped(Vector3 position, Vector3 velocity)
+        {
+            Acceleration = Vector3.Zero;
+            Velocity = (Velocity * 0.1f) * -1;
+            Velocity += velocity * 0.75f;
+            Velocity += SetVelocityFromAngle(AngleFromVectors(position, Position), 75);
+            SetRotation();
+        }
+
+        public void Spawn(Vector3 position)
+        {
+            Active = true;
+            Position = position;
+            Velocity = SetRandomVelocity(150);
+            SetRotation();
+        }
+
+        void SetRotation()
+        {
+            RotationVelocity = new Vector3(Services.RandomMinMax(-1, 1), Services.RandomMinMax(-1, 1), 0);
+        }
+
         void CheckEdge()
         {
-            if (Position.X > 3000)
-                Position.X = -3000;
+            if (Position.X > 6000)
+                Position.X = -6000;
 
-            if (Position.X < -3000)
-                Position.X = 3000;
+            if (Position.X < -6000)
+                Position.X = 6000;
 
-            if (Position.Y > 2000)
-                Position.Y = -2000;
+            if (Position.Y > 4000)
+                Position.Y = -4000;
 
-            if (Position.Y < -2000)
-                Position.Y = 2000;
+            if (Position.Y < -4000)
+                Position.Y = 4000;
         }
 
         bool CheckForCollusion()

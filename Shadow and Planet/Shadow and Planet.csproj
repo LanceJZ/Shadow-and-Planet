@@ -71,7 +71,10 @@
     <Compile Include="Entities\Asteroid.cs" />
     <Compile Include="Entities\AsteroidControl.cs" />
     <Compile Include="Entities\Background.cs" />
+    <Compile Include="Entities\Base.cs" />
+    <Compile Include="Entities\Chest.cs" />
     <Compile Include="Entities\Chunk.cs" />
+    <Compile Include="Entities\LavaLamp.cs" />
     <Compile Include="Entities\Missile.cs" />
     <Compile Include="Entities\Pirate.cs" />
     <Compile Include="Entities\PirateControl.cs" />

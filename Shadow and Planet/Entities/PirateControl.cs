@@ -17,15 +17,20 @@ namespace Shadow_and_Planet.Entities
         Player PlayerRef;
         public List<Pirate> Pirates;
         List<Mod> PirateRadar;
+        List<LavaLamp> LavaLamps;
+        List<Chest> Chests;
 
         XnaModel PirateRadarModel;
+
+        SoundEffect LavaLampSound;
 
         public PirateControl(Game game, Player player) : base(game)
         {
             PlayerRef = player;
             Pirates = new List<Pirate>();
             PirateRadar = new List<Mod>();
-
+            LavaLamps = new List<LavaLamp>();
+            Chests = new List<Chest>();
             game.Components.Add(this);
         }
 
@@ -39,34 +44,60 @@ namespace Shadow_and_Planet.Entities
 
         public void BeginRun()
         {
-            for (int i = 0; i < 4; i++)
-            {
-                Pirates.Add(new Pirate(Game, PlayerRef));
-                ActivatePirateRadar();
-
-                if (Services.RandomMinMax(0, 10) > 5)
-                {
-                    Pirates.Last().Position = new Vector3(Services.RandomMinMax(-3000, -2000),
-                        Services.RandomMinMax(-2000, -1000), 0);
-                }
-                else
-                {
-                    Pirates.Last().Position = new Vector3(Services.RandomMinMax(3000, 2000),
-                        Services.RandomMinMax(2000, 1000), 0);
-                }
-            }
         }
 
         public void LoadContent()
         {
             PirateRadarModel = PlayerRef.Load("cube - pirate");
+            LavaLampSound = PlayerRef.LoadSoundEffect("LavaLampDrop");
         }
 
         public override void Update(GameTime gameTime)
         {
             CheckOtherPirateCollusion();
 
+            int PiratesActive = 0;
+
+            foreach (Pirate pirate in Pirates)
+            {
+                if (pirate.Active)
+                    PiratesActive++;
+            }
+
+            if (PlayerRef.Chests > PiratesActive)
+                SpawnPirate();
+
             base.Update(gameTime);
+        }
+
+        public bool CheckChestPickup(PositionedObject target)
+        {
+            foreach(Chest chest in Chests)
+            {
+                if (chest.Active && target.Active)
+                {
+                    if(chest.CirclesIntersect(target))
+                    {
+                        chest.Active = false;
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public void NewGame()
+        {
+            SpawnPirate();
+        }
+
+        public void GameOver()
+        {
+            foreach(Pirate pirate in Pirates)
+            {
+                pirate.GameOver();
+            }
         }
 
         void ActivatePirateRadar()
@@ -86,19 +117,35 @@ namespace Shadow_and_Planet.Entities
         {
             for (int i = 0; i < Pirates.Count; i++)
             {
-                if (Pirates[i].Hit)
+                if (Pirates[i].Hit && Pirates[i].Active)
                 {
                     DeactivatePirateRadar(i);
                     Pirates[i].Active = false;
                     Pirates[i].Hit = false;
+
+                    SpawnChest(Pirates[i].Position);
+
+                    if (Services.RandomMinMax(1, 100) > 90)
+                        SpawnLavaLamp(Pirates[i].Position);
                 }
 
-                if (Pirates[i].Active)
+                if (PlayerRef.Active)
                 {
-                    Vector3 offset = PlayerRef.
-                        SetVelocity(PlayerRef.AngleFromVectors(PlayerRef.Position, Pirates[i].Position), 60);
-                    offset.Z = 250;
-                    PirateRadar[i].Position = PlayerRef.Position + offset;
+                    if (Pirates[i].Active)
+                    {
+                        Vector3 offset = PlayerRef.
+                            SetVelocity(PlayerRef.AngleFromVectors(PlayerRef.Position, Pirates[i].Position), 60);
+                        offset.Z = 250;
+                        PirateRadar[i].Position = PlayerRef.Position + offset;
+                    }
+                }
+                else
+                {
+                    foreach (Mod radar in PirateRadar)
+                    {
+                        radar.Active = false;
+                        GameOver();
+                    }
                 }
             }
 
@@ -120,6 +167,92 @@ namespace Shadow_and_Planet.Entities
                     }
                 }
             }
+        }
+
+        void SpawnPirate()
+        {
+            bool spawnNew = true;
+            int freePirate = Pirates.Count;
+
+            for (int i = 0; i < Pirates.Count; i++)
+            {
+                if (!Pirates[i].Active)
+                {
+                    spawnNew = false;
+                    freePirate = i;
+                    break;
+                }
+            }
+
+            if (spawnNew)
+            {
+                Pirates.Add(new Pirate(Game, PlayerRef));
+                ActivatePirateRadar();
+            }
+
+            if (Services.RandomMinMax(0, 10) > 5)
+            {
+                Pirates[freePirate].Position = new Vector3(Services.RandomMinMax(-4000, -3000),
+                    Services.RandomMinMax(-4000, -3000), 0);
+            }
+            else
+            {
+                Pirates[freePirate].Position = new Vector3(Services.RandomMinMax(4000, 3000),
+                    Services.RandomMinMax(4000, 3000), 0);
+            }
+
+            PirateRadar[freePirate].Active = true;
+            Pirates[freePirate].Reset();
+        }
+
+        void SpawnLavaLamp(Vector3 position)
+        {
+            LavaLampSound.Play();
+            bool spawnNew = true;
+            int freeLamp = LavaLamps.Count;
+
+            for (int i = 0; i < LavaLamps.Count; i++)
+            {
+                if (!LavaLamps[i].Active)
+                {
+                    spawnNew = false;
+                    freeLamp = i;
+                    break;
+                }
+            }
+
+            if (spawnNew)
+            {
+                LavaLamps.Add(new LavaLamp(Game));
+            }
+
+            LavaLamps[freeLamp].Position = position;
+            LavaLamps[freeLamp].Position.X += Services.RandomMinMax(-30, 30);
+            LavaLamps[freeLamp].Position.Y += Services.RandomMinMax(-30, 30);
+        }
+
+        void SpawnChest(Vector3 position)
+        {
+            bool spawnNew = true;
+            int freeChest = Chests.Count;
+
+            for (int i = 0; i < Chests.Count; i++)
+            {
+                if (!Chests[i].Active)
+                {
+                    spawnNew = false;
+                    freeChest = i;
+                    break;
+                }
+            }
+
+            if (spawnNew)
+            {
+                Chests.Add(new Chest(Game, PlayerRef));
+            }
+
+            Chests[freeChest].Position = position;
+            Chests[freeChest].Active = true;
         }
     }
 }

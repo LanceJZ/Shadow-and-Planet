@@ -44,23 +44,23 @@ namespace Shadow_and_Planet.Entities
 
         public void BeginRun()
         {
-            for (int i = 0; i < 10; i++)
+            for (int i = 0; i < 6; i++)
             {
                 Asteroids.Add(new Asteroid(Game, PlayerRef, PiratesRef));
                 ActivateRockRadar();
 
                 if (Services.RandomMinMax(0, 10) > 5)
                 {
-                    Asteroids.Last().Position = new Vector3(Services.RandomMinMax(-3000, -300),
-                        Services.RandomMinMax(-2000, -200), 0);
+                    Asteroids.Last().Position = new Vector3(Services.RandomMinMax(-4000, -2000),
+                        Services.RandomMinMax(-4000, -2000), 0);
 
                     Asteroids.Last().RotationVelocity = new Vector3(Services.RandomMinMax(-1, 1),
                         0, Services.RandomMinMax(-0.5f, 0.5f));
                 }
                 else
                 {
-                    Asteroids.Last().Position = new Vector3(Services.RandomMinMax(300, 3000),
-                        Services.RandomMinMax(200, 2000), 0);
+                    Asteroids.Last().Position = new Vector3(Services.RandomMinMax(2000, 4000),
+                        Services.RandomMinMax(2000, 4000), 0);
 
                     Asteroids.Last().RotationVelocity = new Vector3(Services.RandomMinMax(-1, 1),
                         0, Services.RandomMinMax(-0.5f, 0.5f));
@@ -86,14 +86,58 @@ namespace Shadow_and_Planet.Entities
                     EjectChunk(rock);
                 }
 
-                Vector3 offset = PlayerRef.
-                    SetVelocity(PlayerRef.AngleFromVectors(PlayerRef.Position, rock.Position), 80);
-                offset.Z = 250;
-                RockRadar[i].Position = PlayerRef.Position + offset;
-                i++;
+                foreach(Pirate pirate in PiratesRef.Pirates)
+                {
+                    pirate.CheckMissileHit(rock);
+
+                    foreach (Chunk chunk in Chunks)
+                    {
+                        if (chunk.Active)
+                        {
+                            if (rock.CirclesIntersect(chunk))
+                            {
+                                chunk.Bumped(rock.Position, rock.Velocity);
+                            }
+
+                            if (pirate.Active)
+                            {
+                                if (pirate.CirclesIntersect(chunk))
+                                {
+                                    pirate.Bumped(chunk.Position, chunk.Velocity);
+                                    chunk.Bumped(pirate.Position, pirate.Velocity);
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+                if (PlayerRef.Active)
+                {
+                    Vector3 offset = PlayerRef.
+                        SetVelocity(PlayerRef.AngleFromVectors(PlayerRef.Position, rock.Position), 80);
+                    offset.Z = 250;
+                    RockRadar[i].Position = PlayerRef.Position + offset;
+                    i++;
+                }
+                else
+                {
+                    foreach(Mod radar in RockRadar)
+                    {
+                        radar.Active = false;
+                    }
+                }
             }
 
             base.Update(gameTime);
+        }
+
+        public void NewGame()
+        {
+            foreach(Mod radar in RockRadar)
+            {
+                radar.Active = true;
+            }
         }
 
         void ActivateRockRadar()
@@ -138,14 +182,10 @@ namespace Shadow_and_Planet.Entities
 
             if (spawnNewChunk)
             {
-                Chunks.Add(new Chunk(Game));
-                Chunks.Last().PlayerRef = PlayerRef;
+                Chunks.Add(new Chunk(Game, PlayerRef));
             }
 
-            Chunks[freeChunk].Active = true;
-            Chunks[freeChunk].Position = rock.Position;
-            Chunks[freeChunk].Velocity = Chunks[0].SetRandomVelocity(150);
-            Chunks[freeChunk].RotationVelocity = new Vector3(Services.RandomMinMax(-1, 1), Services.RandomMinMax(-1, 1), 0);
+            Chunks[freeChunk].Spawn(rock.Position);
         }
     }
 }

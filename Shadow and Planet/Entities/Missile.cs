@@ -16,17 +16,16 @@ namespace Shadow_and_Planet.Entities
         PositionedObject TargetRef;
         Timer LifeTimer;
 
-        public Missile(Game game, Player player) : base(game)
+        public Missile(Game game) : base(game)
         {
-            TargetRef = player;
             LifeTimer = new Timer(game);
+            LoadContent();
         }
 
         public override void Initialize()
         {
             Active = false;
             base.Initialize();
-            LoadContent();
         }
 
         public override void LoadContent()
@@ -52,32 +51,44 @@ namespace Shadow_and_Planet.Entities
                 {
                     Active = false;
                 }
+
+                CheckCollusions();
             }
 
             base.Update(gameTime);
         }
 
-        public void Spawn(Vector3 postion, PositionedObject target, float timer)
+        public void Spawn(Vector3 postion, Vector3 rotation, PositionedObject target, float timer)
         {
             Active = true;
             Position = postion;
+            Rotation.Z = rotation.Z;
             TargetRef = target;
             LifeTimer.Reset(timer);
         }
 
+        void CheckCollusions()
+        {
+            if (CirclesIntersect(TargetRef))
+            {
+                TargetRef.Hit = true;
+                Active = false;
+            }
+        }
+
         void CheckEdge()
         {
-            if (Position.X > 3000)
-                Position.X = -3000;
+            if (Position.X > 6000)
+                Position.X = -6000;
 
-            if (Position.X < -3000)
-                Position.X = 3000;
+            if (Position.X < -6000)
+                Position.X = 6000;
 
-            if (Position.Y > 2000)
-                Position.Y = -2000;
+            if (Position.Y > 4000)
+                Position.Y = -4000;
 
-            if (Position.Y < -2000)
-                Position.Y = 2000;
+            if (Position.Y < -4000)
+                Position.Y = 4000;
         }
     }
 }

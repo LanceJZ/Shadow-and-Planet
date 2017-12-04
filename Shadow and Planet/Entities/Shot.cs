@@ -59,17 +59,17 @@ namespace Shadow_and_Planet.Entities
 
         void CheckEdge()
         {
-            if (Position.X > 3000)
-                Position.X = -3000;
+            if (Position.X > 6000)
+                Position.X = -6000;
 
-            if (Position.X < -3000)
-                Position.X = 3000;
+            if (Position.X < -6000)
+                Position.X = 6000;
 
-            if (Position.Y > 2000)
-                Position.Y = -2000;
+            if (Position.Y > 4000)
+                Position.Y = -4000;
 
-            if (Position.Y < -2000)
-                Position.Y = 2000;
+            if (Position.Y < -4000)
+                Position.Y = 4000;
         }
     }
 }

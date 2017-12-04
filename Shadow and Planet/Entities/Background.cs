@@ -13,7 +13,7 @@ namespace Shadow_and_Planet.Entities
 
     public class Background : GameComponent, IBeginable, IUpdateableComponent, ILoadContent
     {
-        Engine.AModel[] Stars = new Engine.AModel[300];
+        Engine.AModel[] Stars = new Engine.AModel[400];
         Engine.AModel[] StarsBack = new Engine.AModel[40];
 
         Vector3[] StarsOrg;
@@ -42,7 +42,7 @@ namespace Shadow_and_Planet.Entities
 
             for (int i = 0; i < Stars.Length; i++)
             {
-                Stars[i].Position = new Vector3(Services.RandomMinMax(-3000, 3000), Services.RandomMinMax(-2000, 2000), -200);
+                Stars[i].Position = new Vector3(Services.RandomMinMax(-6000, 6000), Services.RandomMinMax(-4000, 4000), -200);
                 Stars[i].RotationVelocity = new Vector3(Services.RandomMinMax(-spinSpeed, spinSpeed),
                     Services.RandomMinMax(-spinSpeed, spinSpeed), Services.RandomMinMax(-spinSpeed, spinSpeed));
             }

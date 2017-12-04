@@ -22,17 +22,15 @@ namespace Shadow_and_Planet.Entities
         {
             PlayerRef = player;
             PiratesRef = pirate;
+            LoadContent();
         }
 
         public override void Initialize()
         {
             Scale = 2;
             Radius = 100;
-            ResetHitpoints();
 
             base.Initialize();
-
-            LoadContent();
         }
 
         public override void LoadContent()
@@ -44,6 +42,7 @@ namespace Shadow_and_Planet.Entities
         public override void BeginRun()
         {
             Velocity = SetRandomVelocity(25);
+            ResetHitpoints();
 
             base.BeginRun();
         }
@@ -58,17 +57,17 @@ namespace Shadow_and_Planet.Entities
 
         void CheckEdge()
         {
-            if (Position.X > 3000)
-                Position.X = -3000;
+            if (Position.X > 6000)
+                Position.X = -6000;
 
-            if (Position.X < -3000)
-                Position.X = 3000;
+            if (Position.X < -6000)
+                Position.X = 6000;
 
-            if (Position.Y > 2000)
-                Position.Y = -2000;
+            if (Position.Y > 4000)
+                Position.Y = -4000;
 
-            if (Position.Y < -2000)
-                Position.Y = 2000;
+            if (Position.Y < -4000)
+                Position.Y = 4000;
         }
 
         void CheckCollusion()
@@ -111,7 +110,8 @@ namespace Shadow_and_Planet.Entities
 
         void ResetHitpoints()
         {
-            HitPoints = (int)Services.RandomMinMax(10, 20);
+            int patato = PlayerRef.OreinHold;
+            HitPoints = (int)Services.RandomMinMax(20 + patato, 40 + patato);
         }
     }
 }

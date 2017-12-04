@@ -166,7 +166,7 @@ namespace Engine
         /// <param name="Parent">The parent to this class.</param>
         /// <param name="activeDependent">Bind Active to child.</param>
         /// <param name="directConnection">Bind Position and Rotation to child.</param>
-		public virtual void AddAsChild(PositionedObject Parent, bool activeDependent, bool directConnection)
+		public virtual void AddAsChildOf(PositionedObject Parent, bool activeDependent, bool directConnection)
 		{
             ActiveDependent = activeDependent;
             DirectConnection = directConnection;
