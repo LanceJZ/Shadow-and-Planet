@@ -23,10 +23,9 @@ namespace Shadow_and_Planet.Entities
 
         XnaModel HealthModel;
 
-        SoundEffect ExplodSound;
+        SoundEffect ExplodeSound;
         SoundEffect HitSound;
         SoundEffect BumpSound;
-        SoundEffect MissileSound;
 
         Vector3 NewHeading = Vector3.Zero;
 
@@ -59,10 +58,9 @@ namespace Shadow_and_Planet.Entities
         {
             LoadModel("SandP-Pirate");
             HealthModel = Load("cube");
-            ExplodSound = LoadSoundEffect("PirateExplode");
+            ExplodeSound = LoadSoundEffect("PirateExplode");
             HitSound = LoadSoundEffect("PirateHit");
             BumpSound = LoadSoundEffect("PirateBump");
-            MissileSound = LoadSoundEffect("PirateMissile");
 
             BeginRun();
         }
@@ -156,14 +154,28 @@ namespace Shadow_and_Planet.Entities
             }
         }
 
-        public void CheckMissileHit(PositionedObject target)
+        public bool CheckMissileHit(PositionedObject target)
         {
             foreach (Missile missile in Missiles)
             {
-                if (missile.CirclesIntersect(target))
+                if (missile.Active)
                 {
-                    missile.Active = false;
+                    if (missile.CirclesIntersect(target))
+                    {
+                        missile.HitTarget();
+                        return true;
+                    }
                 }
+            }
+
+            return false;
+        }
+
+        public void CheckPlayerMissilHit()
+        {
+            if (PlayerRef.CheckMissileCollusions(this))
+            {
+                Hit = true;
             }
         }
 
@@ -209,6 +221,7 @@ namespace Shadow_and_Planet.Entities
             if (DetectPlayer.CirclesIntersect(PlayerRef))
             {
                 Stop = true;
+                PlayerRef.MissileTarget = this;
             }
             else
             {
@@ -218,7 +231,6 @@ namespace Shadow_and_Planet.Entities
 
         void FireMissile()
         {
-            MissileSound.Play();
             bool spawnNew = true;
             int freeOne = Missiles.Count;
 
@@ -278,8 +290,15 @@ namespace Shadow_and_Planet.Entities
                 if (HitPoints < 1)
                 {
                     Hit = true;
-                    ExplodSound.Play();
+                    ExplodeSound.Play();
                 }
+            }
+
+            if (PlayerRef.CheckMissileCollusions(this))
+            {
+                HitSound.Play();
+                Hit = true;
+                ExplodeSound.Play();
             }
 
             foreach(Missile missile in Missiles)
@@ -288,7 +307,7 @@ namespace Shadow_and_Planet.Entities
                 {
                     if (PlayerRef.CheckShotCollusions(missile))
                     {
-                        missile.Active = false;
+                        missile.HitTarget();
                     }
                 }
             }

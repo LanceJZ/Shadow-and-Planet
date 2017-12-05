@@ -1002,3 +1002,9 @@
 /processorParam:Quality=Best
 /build:Sounds/ShotHit.wav
 
+#begin SongOne.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:SongOne.mp3
+

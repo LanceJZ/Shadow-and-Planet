@@ -150,10 +150,10 @@ namespace Shadow_and_Planet.Entities
                     Pirates[i].Active = false;
                     Pirates[i].Hit = false;
 
-                    if (Services.RandomMinMax(1, 6) > 4)
+                    if (Services.RandomMinMax(1, 7) > 4)
                         SpawnChest(Pirates[i].Position);
 
-                    if (Services.RandomMinMax(1, 100) > 90)
+                    if (Services.RandomMinMax(1, 100) > 95)
                         SpawnLavaLamp(Pirates[i].Position);
                 }
 
@@ -174,6 +174,11 @@ namespace Shadow_and_Planet.Entities
                         radar.Active = false;
                         GameOver();
                     }
+                }
+
+                if (Pirates[i].CheckMissileHit(PlayerRef))
+                {
+                    PlayerRef.Hit = true;
                 }
             }
 

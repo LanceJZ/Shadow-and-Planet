@@ -61,7 +61,7 @@ namespace Shadow_and_Planet.Entities
             LifeTimer.Reset(timer);
         }
 
-        public void Hit()
+        public void HitTarget()
         {
             Active = false;
             Explosion.Spawn(Position, Radius * 0.25f);

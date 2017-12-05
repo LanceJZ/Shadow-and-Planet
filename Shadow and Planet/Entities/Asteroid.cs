@@ -79,9 +79,14 @@ namespace Shadow_and_Planet.Entities
 
             foreach (Pirate pirate in PiratesRef.Pirates)
             {
-                if (CirclesIntersect(pirate))
+                if (pirate.Active)
                 {
-                    pirate.Bumped(Position, Velocity);
+                    if (CirclesIntersect(pirate))
+                    {
+                        pirate.Bumped(Position, Velocity);
+                    }
+
+                    pirate.CheckMissileHit(this);
                 }
             }
 

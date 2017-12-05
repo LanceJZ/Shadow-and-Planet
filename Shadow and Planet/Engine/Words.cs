@@ -76,6 +76,12 @@ namespace Engine
                         Mod letterE = InitiateLetter(letval);
                         letterE.Scale = Scale;
                     }
+
+                }
+
+                if ((int)letter == 32)
+                {
+                    WordEs.Add(new Mod(Game));
                 }
             }
 
@@ -121,6 +127,7 @@ namespace Engine
                 foreach (Mod word in WordEs)
                 {
                     word.Active = show;
+                    word.Visable = show;
                 }
             }
         }

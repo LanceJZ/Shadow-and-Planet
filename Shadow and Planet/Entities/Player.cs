@@ -29,11 +29,14 @@ namespace Shadow_and_Planet.Entities
         Numbers Score;
         Numbers Health;
         Numbers ChestCollected;
+        Numbers MissilesLeft;
         Words OreText;
         Words ScoreText;
         Words HealthText;
         Words ChestCollectedText;
+        Words MissilesLeftText;
         List<Mod> HealthBar;
+        List<Mod> MissileBar;
         XnaModel HealthModel;
         Explode Explosion;
 
@@ -41,6 +44,9 @@ namespace Shadow_and_Planet.Entities
         KeyboardState KeyStateOld;
 
         Shot[] Shots = new Shot[5];
+        List<Missile> Missiles;
+
+        public PositionedObject MissileTarget;
 
         Mod Flame;
         Mod BaseRadar;
@@ -61,16 +67,20 @@ namespace Shadow_and_Planet.Entities
             Score = new Numbers(game);
             Health = new Numbers(game);
             ChestCollected = new Numbers(game);
+            MissilesLeft = new Numbers(game);
             OreText = new Words(game);
             ScoreText = new Words(game);
             HealthText = new Words(game);
             ChestCollectedText = new Words(game);
+            MissilesLeftText = new Words(game);
             Flame = new Mod(game);
             BaseRadar = new Mod(game);
             DockTimer = new Timer(game);
             ThrustTimer = new Timer(game);
             HealthBar = new List<Mod>();
             Explosion = new Explode(game);
+            Missiles = new List<Missile>();
+            MissileBar = new List<Mod>();
         }
 
         public override void Initialize()
@@ -121,6 +131,8 @@ namespace Shadow_and_Planet.Entities
             OreCollected.Position.Z = 150;
             ChestCollected.ProcessNumber(Chests, new Vector3(-220, 400, 150), 2);
             ChestCollected.Position.Z = 150;
+            MissilesLeftText.ProcessWords("MISSILES", new Vector3(110, 400, 150), 2);
+            MissilesLeft.ProcessNumber(0, new Vector3(400, 400, 150), 2);
 
             Flame.AddAsChildOf(this, true, false);
             Flame.Position.X = -25;
@@ -194,6 +206,12 @@ namespace Shadow_and_Planet.Entities
                 ChestCollected.Position.X = Position.X - 220;
                 ChestCollected.Position.Y = Position.Y + 400;
                 ChestCollected.UpdatePosition();
+                MissilesLeftText.Position.X = Position.X + 100;
+                MissilesLeftText.Position.Y = Position.Y + 400;
+                MissilesLeftText.UpdatePosition();
+                MissilesLeft.Position.X = Position.X + 400;
+                MissilesLeft.Position.Y = Position.Y + 400;
+                MissilesLeft.UpdatePosition();
 
                 if (!Docked)
                 {
@@ -256,8 +274,24 @@ namespace Shadow_and_Planet.Entities
                 {
                     if (shot.CirclesIntersect(target))
                     {
-                        //ShotHitSound.Play();
-                        shot.Hit();
+                        shot.HitTarget();
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        public bool CheckMissileCollusions(PositionedObject target)
+        {
+            foreach(Missile missile in Missiles)
+            {
+                if (missile.Active)
+                {
+                    if (missile.CirclesIntersect(target))
+                    {
+                        missile.HitTarget();
                         return true;
                     }
                 }
@@ -286,6 +320,99 @@ namespace Shadow_and_Planet.Entities
             ChestPickupSound.Play();
             Chests++;
             ChestCollected.UpdateNumber(Chests);
+            UpdateMissileDisplay();
+        }
+
+        void UpdateMissileDisplay()
+        {
+            int numberOfMissiles = 0;
+            int numberOfLiveMissiles = 0;
+
+            foreach (Missile missile in Missiles)
+            {
+                if (missile.Active)
+                    numberOfLiveMissiles++;
+            }
+
+            numberOfMissiles = Chests - numberOfLiveMissiles;
+
+            MissilesLeft.UpdateNumber(numberOfMissiles);
+
+            foreach (Mod missile in MissileBar)
+            {
+                missile.Active = false;
+            }
+
+            for (int mc = 0; mc < numberOfMissiles; mc++)
+            {
+                bool spawnNew = true;
+                int freeOne = MissileBar.Count;
+
+                for (int i = 0; i < MissileBar.Count; i++)
+                {
+                    if (!MissileBar[i].Active)
+                    {
+                        MissileBar[i].Active = true;
+                        spawnNew = false;
+                        break;
+                    }
+                }
+
+                if (spawnNew)
+                {
+                    MissileBar.Add(new Missile(Game));
+                    MissileBar.Last().AddAsChildOf(this, false, false);
+                    MissileBar.Last().LoadModel("SandP-Missile");
+                    MissileBar.Last().Scale = 4;
+                }
+            }
+
+            float posX = 100;
+
+            foreach (Mod missile in MissileBar)
+            {
+                if (missile.Active)
+                {
+                    missile.Position.X = posX;
+                    missile.Position.Y = 400;
+                    missile.Position.Z = 100;
+                    posX += 20;
+                    missile.Rotation.Z = MathHelper.PiOver2;
+                }
+            }
+        }
+
+        void FireMissile()
+        {
+            bool spawnNew = false;
+            int freeOne = Missiles.Count;
+
+            if (Missiles.Count < Chests)
+            {
+                spawnNew = true;
+            }
+            else
+            {
+                return;
+            }
+
+            for (int i = 0; i < Missiles.Count; i++)
+            {
+                if (!Missiles[i].Active)
+                {
+                    freeOne = i;
+                    spawnNew = false;
+                    break;
+                }
+            }
+
+            if (spawnNew)
+            {
+                Missiles.Add(new Missile(Game));
+            }
+
+            Missiles[freeOne].Spawn(Position, Rotation, MissileTarget, 10);
+            UpdateMissileDisplay();
         }
 
         void CheckDocking()
@@ -340,6 +467,14 @@ namespace Shadow_and_Planet.Entities
                 if (KeyState.IsKeyDown(Keys.LeftControl))
                 {
                     FireShot();
+                }
+            }
+
+            if (!KeyStateOld.IsKeyDown(Keys.LeftShift))
+            {
+                if (KeyState.IsKeyDown(Keys.LeftShift))
+                {
+                    FireMissile();
                 }
             }
 

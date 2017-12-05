@@ -13,7 +13,7 @@ namespace Shadow_and_Planet.Entities
 
     public class Background : GameComponent, IBeginable, IUpdateableComponent, ILoadContent
     {
-        Engine.AModel[] Stars = new Engine.AModel[400];
+        Engine.AModel[] Stars = new Engine.AModel[600];
         Engine.AModel[] StarsBack = new Engine.AModel[40];
 
         Vector3[] StarsOrg;

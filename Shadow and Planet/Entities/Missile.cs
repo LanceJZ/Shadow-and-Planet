@@ -16,6 +16,7 @@ namespace Shadow_and_Planet.Entities
         PositionedObject TargetRef;
         Timer LifeTimer;
         SoundEffect HitSound;
+        SoundEffect MissileSound;
         Explode Explosion;
 
         public Missile(Game game) : base(game)
@@ -36,6 +37,7 @@ namespace Shadow_and_Planet.Entities
         {
             LoadModel("SandP-Missile");
             HitSound = LoadSoundEffect("MissileHit");
+            MissileSound = LoadSoundEffect("PirateMissile");
 
             BeginRun();
         }
@@ -50,15 +52,17 @@ namespace Shadow_and_Planet.Entities
         {
             if (Active)
             {
-                RotationVelocity.Z = AimAtTarget(TargetRef.Position, Rotation.Z, MathHelper.PiOver4 *0.25f);
+                if (TargetRef != null)
+                {
+                    RotationVelocity.Z = AimAtTarget(TargetRef.Position, Rotation.Z, MathHelper.PiOver4 * 0.25f);
+                }
+
                 Velocity = SetVelocityFromAngle(Rotation.Z, 200);
 
                 if (LifeTimer.Expired)
                 {
                     Active = false;
                 }
-
-                CheckCollusions();
             }
 
             base.Update(gameTime);
@@ -66,6 +70,7 @@ namespace Shadow_and_Planet.Entities
 
         public void Spawn(Vector3 postion, Vector3 rotation, PositionedObject target, float timer)
         {
+            MissileSound.Play();
             Active = true;
             Position = postion;
             Rotation.Z = rotation.Z;
@@ -73,15 +78,11 @@ namespace Shadow_and_Planet.Entities
             LifeTimer.Reset(timer);
         }
 
-        void CheckCollusions()
+        public void HitTarget()
         {
-            if (CirclesIntersect(TargetRef))
-            {
-                HitSound.Play();
-                Explosion.Spawn(Position, Radius * 0.25f);
-                TargetRef.Hit = true;
-                Active = false;
-            }
+            HitSound.Play();
+            Explosion.Spawn(Position, Radius * 0.25f);
+            Active = false;
         }
 
         void CheckEdge()
