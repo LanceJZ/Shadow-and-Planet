@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Media;
 using XnaModel = Microsoft.Xna.Framework.Graphics.Model;
 using Shadow_and_Planet.Entities;
 using Engine;
-using Microsoft.Xna.Framework.Media;
 
 namespace Shadow_and_Planet
 {
