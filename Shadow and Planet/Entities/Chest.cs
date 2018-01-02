@@ -22,7 +22,7 @@ namespace Shadow_and_Planet.Entities
 
         public override void Initialize()
         {
-            RotationVelocity = SetRandomVelocity(5);
+            RotationVelocity = RandomVelocity(5);
             Radius = 20;
 
             base.Initialize();

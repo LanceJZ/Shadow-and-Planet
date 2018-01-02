@@ -51,7 +51,7 @@ namespace Shadow_and_Planet.Entities
 
         public void LoadContent()
         {
-            PirateRadarModel = PlayerRef.Load("cube");
+            PirateRadarModel = PlayerRef.Load("core/cube");
             LavaLampSound = PlayerRef.LoadSoundEffect("LavaLampDrop");
         }
 
@@ -108,7 +108,7 @@ namespace Shadow_and_Planet.Entities
             PirateRadar.Add(new Mod(Game));
             PirateRadar.Last().SetModel(PirateRadarModel);
             PirateRadar.Last().DefuseColor = new Vector3(1, 0, 0);
-            PirateRadar.Last().Scale = 4;
+            PirateRadar.Last().Scale = 2;
         }
 
         void DeactivatePirateRadar(int number)
@@ -161,8 +161,8 @@ namespace Shadow_and_Planet.Entities
                 {
                     if (Pirates[i].Active)
                     {
-                        Vector3 offset = PlayerRef.
-                            SetVelocity(PlayerRef.AngleFromVectors(PlayerRef.Position, Pirates[i].Position), 60);
+                        Vector3 offset = PlayerRef.VelocityFromVectors(PlayerRef.Position,
+                            Pirates[i].Position, 60);
                         offset.Z = 250;
                         PirateRadar[i].Position = PlayerRef.Position + offset;
                     }

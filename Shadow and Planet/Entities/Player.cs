@@ -89,7 +89,7 @@ namespace Shadow_and_Planet.Entities
 
             Radius = 20;
             Scale = 1;
-            BaseRadar.Scale = 5f;
+            BaseRadar.Scale = 3f;
             BaseRadar.DefuseColor = new Vector3(0.5f, 0.45f, 0.55f);
 
             base.Initialize();
@@ -105,8 +105,8 @@ namespace Shadow_and_Planet.Entities
                 Shots[i] = new Shot(Game);
             }
 
-            BaseRadar.LoadModel("cube");
-            HealthModel = Load("cube");
+            BaseRadar.LoadModel("core/cube");
+            HealthModel = Load("core/cube");
 
             ThrustSound = LoadSoundEffect("Thrust");
             ThrustTimer.Amount = (float)ThrustSound.Duration.TotalSeconds;
@@ -180,7 +180,7 @@ namespace Shadow_and_Planet.Entities
                         UnDockSound.Play();
                         BaseRef.LoadOre(OreinHold);
                         OreinHold = 0;
-                        OreCollected.UpdateNumber(OreinHold);
+                        OreCollected.ChangeNumber(OreinHold);
                         Docked = false;
                     }
                 }
@@ -194,28 +194,16 @@ namespace Shadow_and_Planet.Entities
                 base.Update(gameTime);
                 Services.Camera.Position.X = Position.X;
                 Services.Camera.Position.Y = Position.Y;
-                OreText.Position.X = Position.X - 110;
-                OreText.Position.Y = Position.Y + 400;
-                OreText.UpdatePosition();
-                ChestCollectedText.Position.X = Position.X - 400;
-                ChestCollectedText.Position.Y = Position.Y + 400;
-                ChestCollectedText.UpdatePosition();
-                OreCollected.Position.X = Position.X;
-                OreCollected.Position.Y = Position.Y + 400;
-                OreCollected.UpdatePosition();
-                ChestCollected.Position.X = Position.X - 220;
-                ChestCollected.Position.Y = Position.Y + 400;
-                ChestCollected.UpdatePosition();
-                MissilesLeftText.Position.X = Position.X + 100;
-                MissilesLeftText.Position.Y = Position.Y + 400;
-                MissilesLeftText.UpdatePosition();
-                MissilesLeft.Position.X = Position.X + 400;
-                MissilesLeft.Position.Y = Position.Y + 400;
-                MissilesLeft.UpdatePosition();
+                OreText.ChangePosition(new Vector3(Position.X - 110, Position.Y + 400, 150));
+                ChestCollectedText.ChangePosition(new Vector3(Position.X - 400, Position.Y + 400, 150));
+                OreCollected.ChangePosition(new Vector3(Position.X, Position.Y + 400, 150));
+                ChestCollected.ChangePosition(new Vector3(Position.X - 220, Position.Y + 400, 150));
+                MissilesLeftText.ChangePosition(new Vector3(Position.X + 100, Position.Y + 400, 150));
+                MissilesLeft.ChangePosition(new Vector3(Position.X + 400, Position.Y + 400, 150));
 
                 if (!Docked)
                 {
-                    Vector3 offset = SetVelocity(AngleFromVectors(Position, BaseRef.Position), 40);
+                    Vector3 offset = VelocityFromVectors(Position, BaseRef.Position, 40);
                     offset.Z = 250;
                     BaseRadar.Position = Position + offset;
                 }
@@ -248,9 +236,9 @@ namespace Shadow_and_Planet.Entities
             BaseRadar.Active = true;
             BaseRef.OreOnBase = 0;
             OreinHold = 0;
-            OreCollected.UpdateNumber(OreinHold);
+            OreCollected.ChangeNumber(OreinHold);
             Chests = 0;
-            ChestCollected.UpdateNumber(Chests);
+            ChestCollected.ChangeNumber(Chests);
         }
 
         public void Bumped(Vector3 position, Vector3 velocity) //TODO: Make this part of PositionedObject class.
@@ -258,7 +246,7 @@ namespace Shadow_and_Planet.Entities
             Acceleration = Vector3.Zero;
             Velocity = (Velocity * 0.1f) * -1;
             Velocity += velocity * 0.75f;
-            Velocity += SetVelocityFromAngle(AngleFromVectors(position, Position), 75);
+            Velocity += VelocityFromVectors(position, Position, 75);
         }
 
         /// <summary>
@@ -306,7 +294,7 @@ namespace Shadow_and_Planet.Entities
             {
                 OreSound.Play();
                 OreinHold++;
-                OreCollected.UpdateNumber(OreinHold);
+                OreCollected.ChangeNumber(OreinHold);
                 return true;
             }
             else
@@ -319,7 +307,7 @@ namespace Shadow_and_Planet.Entities
         {
             ChestPickupSound.Play();
             Chests++;
-            ChestCollected.UpdateNumber(Chests);
+            ChestCollected.ChangeNumber(Chests);
             UpdateMissileDisplay();
         }
 
@@ -336,7 +324,7 @@ namespace Shadow_and_Planet.Entities
 
             numberOfMissiles = Chests - numberOfLiveMissiles;
 
-            MissilesLeft.UpdateNumber(numberOfMissiles);
+            MissilesLeft.ChangeNumber(numberOfMissiles);
 
             foreach (Mod missile in MissileBar)
             {
@@ -483,7 +471,7 @@ namespace Shadow_and_Planet.Entities
 
         void ThrustOn()
         {
-            Acceleration = SetVelocity3FromAngleZ(Rotation.Z, 300);
+            Acceleration = VelocityFromAngle(Rotation.Z, 300);
             Flame.Visable = true;
 
             if (ThrustTimer.Expired)
@@ -510,8 +498,8 @@ namespace Shadow_and_Planet.Entities
                 if (!shot.Active)
                 {
                     FireSound.Play();
-                    Vector3 offset = SetVelocity(Rotation.Z, 20);
-                    Vector3 dir = SetVelocity(Rotation.Z, 500);
+                    Vector3 offset = VelocityFromAngle(Rotation.Z, 20);
+                    Vector3 dir = VelocityFromAngle(Rotation.Z, 500);
 
                     shot.Spawn(Position + offset, Velocity * 0.75f + dir, 1);
                     break;

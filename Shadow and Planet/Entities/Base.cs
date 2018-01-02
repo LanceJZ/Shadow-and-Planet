@@ -51,12 +51,10 @@ namespace Shadow_and_Planet.Entities
 
         public override void Update(GameTime gameTime)
         {
-            OreText.Position.X = Services.Camera.Position.X - 200;
-            OreText.Position.Y = Services.Camera.Position.Y - 400;
-            OreText.UpdatePosition();
-            OreAmount.Position.X = Services.Camera.Position.X;
-            OreAmount.Position.Y = Services.Camera.Position.Y - 400;
-            OreAmount.UpdatePosition();
+            OreText.ChangePosition(new Vector3(Services.Camera.Position.X - 200,
+                Services.Camera.Position.Y - 400, 150));
+            OreAmount.ChangePosition(new Vector3(Services.Camera.Position.X,
+                Services.Camera.Position.Y - 400, 150));
 
             base.Update(gameTime);
         }
@@ -64,13 +62,13 @@ namespace Shadow_and_Planet.Entities
         public void LoadOre(int amount)
         {
             OreOnBase += amount;
-            OreAmount.UpdateNumber(OreOnBase);
+            OreAmount.ChangeNumber(OreOnBase);
         }
 
         public void NewShip()
         {
             OreOnBase -= 15;
-            OreAmount.UpdateNumber(OreOnBase);
+            OreAmount.ChangeNumber(OreOnBase);
         }
     }
 }

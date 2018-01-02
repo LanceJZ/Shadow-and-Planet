@@ -57,7 +57,7 @@ namespace Shadow_and_Planet.Entities
                     RotationVelocity.Z = AimAtTarget(TargetRef.Position, Rotation.Z, MathHelper.PiOver4 * 0.25f);
                 }
 
-                Velocity = SetVelocityFromAngle(Rotation.Z, 200);
+                Velocity = VelocityFromAngle(Rotation.Z, 200);
 
                 if (LifeTimer.Expired)
                 {

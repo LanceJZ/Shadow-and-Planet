@@ -35,7 +35,7 @@ namespace Shadow_and_Planet
         bool BackgroundSongPlaying;
         bool BackgroundSongOn;
 
-        public Game1()
+        public Game1() //TODO: Move none setup code to separate class.
         {
             Graphics = new GraphicsDeviceManager(this);
             Graphics.IsFullScreen = false;
@@ -99,7 +99,8 @@ namespace Shadow_and_Planet
             // Create a new SpriteBatch, which can be used to draw textures.
             SpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            BackgroundMusic = Content.Load<Song>("SongOne");
+            //BackgroundMusic = Content.Load<Song>("SongOne"); //Bug does not allow this to work.
+            //There is a bug in Windows GL song for 3.6 of the content pipeline.
         }
 
         /// <summary>
@@ -164,7 +165,7 @@ namespace Shadow_and_Planet
 
                 if (BackgroundSongPlaying)
                 {
-                    MediaPlayer.Stop();
+                    //MediaPlayer.Stop();
                     BackgroundSongPlaying = false;
                 }
             }
@@ -172,15 +173,15 @@ namespace Shadow_and_Planet
             {
                 if (!BackgroundSongPlaying && BackgroundSongOn)
                 {
-                    MediaPlayer.Play(BackgroundMusic);
-                    MediaPlayer.IsRepeating = true;
+                    //MediaPlayer.Play(BackgroundMusic);
+                    //MediaPlayer.IsRepeating = true;
                     BackgroundSongPlaying = true;
                 }
                 else
                 {
                     if (Keyboard.GetState().IsKeyDown(Keys.O))
                     {
-                        MediaPlayer.Stop();
+                        //MediaPlayer.Stop();
                         BackgroundSongPlaying = false;
                         BackgroundSongOn = false;
                     }

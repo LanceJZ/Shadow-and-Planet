@@ -61,7 +61,7 @@ namespace Shadow_and_Planet.Entities
             Acceleration = Vector3.Zero;
             Velocity = (Velocity * 0.1f) * -1;
             Velocity += velocity * 0.75f;
-            Velocity += SetVelocityFromAngle(AngleFromVectors(position, Position), 75);
+            Velocity += VelocityFromVectors(position, Position, 75);
             SetRotation();
         }
 
@@ -69,7 +69,7 @@ namespace Shadow_and_Planet.Entities
         {
             Active = true;
             Position = position;
-            Velocity = SetRandomVelocity(150);
+            Velocity = RandomVelocity(150);
             SetRotation();
         }
 

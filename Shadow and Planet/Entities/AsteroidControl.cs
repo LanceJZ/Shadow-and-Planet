@@ -70,7 +70,7 @@ namespace Shadow_and_Planet.Entities
 
         public void LoadContent()
         {
-            RockRadarModel = PlayerRef.Load("cube");
+            RockRadarModel = PlayerRef.Load("core/cube");
         }
 
         public override void Update(GameTime gameTime)
@@ -115,7 +115,7 @@ namespace Shadow_and_Planet.Entities
                 if (PlayerRef.Active)
                 {
                     Vector3 offset = PlayerRef.
-                        SetVelocity(PlayerRef.AngleFromVectors(PlayerRef.Position, rock.Position), 80);
+                        VelocityFromVectors(PlayerRef.Position, rock.Position, 80);
                     offset.Z = 250;
                     RockRadar[i].Position = PlayerRef.Position + offset;
                     i++;
@@ -144,7 +144,7 @@ namespace Shadow_and_Planet.Entities
         {
             RockRadar.Add(new Mod(Game));
             RockRadar.Last().SetModel(RockRadarModel);
-            RockRadar.Last().Scale = 3;
+            RockRadar.Last().Scale = 1.5f;
         }
 
         void CheckOtherAsteroidCollusion()

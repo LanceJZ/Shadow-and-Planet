@@ -2,7 +2,7 @@
 
 namespace Engine
 {
-    class Timer : GameComponent
+    public class Timer : GameComponent
     {
         private float m_Seconds = 0;
         private float m_Amount = 0;
@@ -36,31 +36,39 @@ namespace Engine
 
         public Timer(Game game) : base(game)
         {
-            game.Components.Add(this);
+            Game.Components.Add(this);
         }
 
         public Timer (Game game, float amount) : base(game)
         {
-            game.Components.Add(this);
             Amount = amount;
+            Game.Components.Add(this);
+        }
+
+        public override void Initialize()
+        {
+
+            base.Initialize();
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
 
-            m_Seconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+            if (!Expired)
+                m_Seconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
         public void Reset()
         {
+            Enabled = true;
             m_Seconds = 0;
         }
 
         public void Reset(float time)
         {
-            m_Seconds = 0;
             m_Amount = time;
+            Reset();
         }
     }
 }

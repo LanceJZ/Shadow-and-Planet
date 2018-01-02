@@ -30,6 +30,7 @@ namespace Shadow_and_Planet.Entities
             Active = false;
             Radius = 2;
             Scale = 2;
+            DefuseColor = new Vector3(0.1f, 0, 2);
 
             LoadContent();
         }
@@ -38,7 +39,7 @@ namespace Shadow_and_Planet.Entities
         {
             base.LoadContent();
 
-            LoadModel("cube");
+            LoadModel("core/cube");
             HitSound = LoadSoundEffect("ShotHit");
         }
 

@@ -45,6 +45,7 @@ namespace Shadow_and_Planet.Entities
                 Stars[i].Position = new Vector3(Services.RandomMinMax(-6000, 6000), Services.RandomMinMax(-4000, 4000), -200);
                 Stars[i].RotationVelocity = new Vector3(Services.RandomMinMax(-spinSpeed, spinSpeed),
                     Services.RandomMinMax(-spinSpeed, spinSpeed), Services.RandomMinMax(-spinSpeed, spinSpeed));
+                Stars[i].Scale = 0.5f;
             }
 
             for (int i = 0; i < StarsBack.Length; i++)
@@ -52,7 +53,9 @@ namespace Shadow_and_Planet.Entities
                 StarsBack[i].Position = new Vector3(Services.RandomMinMax(-600, 600), Services.RandomMinMax(-450, 450), -900);
                 StarsBack[i].RotationVelocity = new Vector3(Services.RandomMinMax(-spinSpeed, spinSpeed),
                     Services.RandomMinMax(-spinSpeed, spinSpeed), Services.RandomMinMax(-spinSpeed, spinSpeed));
-                StarsBack[i].Scale = Services.RandomNumber.Next(1, 3);
+                StarsBack[i].Scale = Services.RandomMinMax(0.5f, 1);
+                StarsBack[i].DefuseColor = new Vector3(Services.RandomMinMax(0.05f, 2), Services.RandomMinMax(0, 0.2f),
+                    Services.RandomMinMax(0.1f, 3));
                 StarsOrg[i] = StarsBack[i].Position;
             }
 
@@ -70,12 +73,12 @@ namespace Shadow_and_Planet.Entities
         {
             for (int i = 0; i < Stars.Length; i++)
             {
-                Stars[i].LoadModel("cube");
+                Stars[i].LoadModel("core/cube");
             }
 
             for (int i = 0; i < StarsBack.Length; i++)
             {
-                StarsBack[i].LoadModel("cube");
+                StarsBack[i].LoadModel("core/cube");
             }
         }
 

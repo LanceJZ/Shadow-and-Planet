@@ -41,7 +41,7 @@ namespace Shadow_and_Planet.Entities
 
         public override void BeginRun()
         {
-            Velocity = SetRandomVelocity(25);
+            Velocity = RandomVelocity(25);
             ResetHitpoints();
 
             base.BeginRun();
@@ -110,7 +110,7 @@ namespace Shadow_and_Planet.Entities
             Acceleration = Vector3.Zero;
             Velocity = (Velocity * 0.1f) * -1;
             Velocity += velocity * 0.75f;
-            Velocity += SetVelocityFromAngle(AngleFromVectors(position, Position), 75);
+            Velocity += VelocityFromVectors(position, Position, 75);
         }
 
         void ResetHitpoints()

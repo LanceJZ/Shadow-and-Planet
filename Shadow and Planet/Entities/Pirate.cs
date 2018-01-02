@@ -57,7 +57,7 @@ namespace Shadow_and_Planet.Entities
         public override void LoadContent()
         {
             LoadModel("SandP-Pirate");
-            HealthModel = Load("cube");
+            HealthModel = Load("Core/cube");
             ExplodeSound = LoadSoundEffect("PirateExplode");
             HitSound = LoadSoundEffect("PirateHit");
             BumpSound = LoadSoundEffect("PirateBump");
@@ -98,7 +98,7 @@ namespace Shadow_and_Planet.Entities
 
                     if (!Stop)
                     {
-                        Velocity = SetVelocityFromAngle(Rotation.Z, 100);
+                        Velocity = VelocityFromAngle(Rotation.Z, 100);
                     }
                     else
                     {
@@ -124,7 +124,7 @@ namespace Shadow_and_Planet.Entities
             Acceleration = Vector3.Zero;
             Velocity = (Velocity * 0.1f) * -1;
             Velocity += velocity * 0.75f;
-            Velocity += SetVelocityFromAngle(AngleFromVectors(position, Position), 75);
+            Velocity += VelocityFromVectors(position, Position, 75);
             RotationVelocity.Z = Services.RandomMinMax(-MathHelper.PiOver4, MathHelper.PiOver4);
             RotationVelocity.X = Services.RandomMinMax(-MathHelper.PiOver4, MathHelper.PiOver4);
             RotationVelocity.Y = Services.RandomMinMax(-MathHelper.PiOver4, MathHelper.PiOver4);

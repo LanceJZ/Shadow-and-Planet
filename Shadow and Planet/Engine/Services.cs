@@ -3,7 +3,9 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
+using XnaModel = Microsoft.Xna.Framework.Graphics.Model;
 #endregion
 
 namespace Engine
@@ -25,6 +27,7 @@ namespace Engine
         private static List<IUpdateableComponent> m_Updateable;
         private static List<IBeginable> m_Beginable;
         private static List<ILoadContent> m_Loadable;
+        private static Game m_Game;
         #endregion
         #region Properties
         /// <summary>
@@ -46,6 +49,7 @@ namespace Engine
             }
         }
 
+        public static Game TheGame { set => m_Game = value; }
         public static GraphicsDeviceManager GraphicsDM { get => m_GraphicsDM; }
         public static SpriteBatch SpriteBatch { get => m_SpriteBatch; set => m_SpriteBatch = value; }
         public static Camera Camera { get => m_Camera; }
@@ -111,7 +115,7 @@ namespace Engine
 
             foreach (IDrawComponent drawable in m_Drawable)
             {
-                drawable.Draw(gameTime);
+                drawable.Draw();
             }
         }
 
@@ -123,6 +127,24 @@ namespace Engine
             {
                 updateable.Update(gameTime);
             }
+        }
+        /// <summary>
+        /// Loads XNA Model from file using the filename. Stored in Content/Models/
+        /// </summary>
+        /// <param name="modelFileName">File name of model to load.</param>
+        /// <returns>XNA Model</returns>
+        public static XnaModel LoadModel(string modelFileName)
+        {
+            return m_Game.Content.Load<XnaModel>("Models/" + modelFileName);
+        }
+        /// <summary>
+        /// Loads Sound Effect from file using filename. Stored in Content/Sounds
+        /// </summary>
+        /// <param name="soundFileName">FileName</param>
+        /// <returns>SoundEffect</returns>
+        public static SoundEffect LoadSoundEffect(string soundFileName)
+        {
+            return m_Game.Content.Load<SoundEffect>("Sounds/" + soundFileName);
         }
         /// <summary>
         /// This is used to start up Panther Engine Services.
@@ -161,6 +183,16 @@ namespace Engine
         public static float RandomMinMax(float min, float max)
         {
             return min + (float)RandomNumber.NextDouble() * (max - min);
+        }
+        /// <summary>
+        /// Get a random int between min and max
+        /// </summary>
+        /// <param name="min">the minimum random value</param>
+        /// <param name="max">the maximum random value</param>
+        /// <returns>int</returns>
+        public static int RandomMinMax(int min, int max)
+        {
+            return min + (int)(RandomNumber.NextDouble() * ((max + 1) - min));
         }
 
         public static void AddDrawableComponent(IDrawComponent drawableComponent)

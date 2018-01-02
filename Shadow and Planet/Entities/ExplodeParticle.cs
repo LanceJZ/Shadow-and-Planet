@@ -49,7 +49,7 @@ namespace Shadow_and_Planet.Entities
 
         public void Spawn(Vector3 position)
         {
-            Velocity = SetRandomVelocity(50);
+            Velocity = RandomVelocity(50);
             Position = position;
             Active = true;
             Scale = Services.RandomMinMax(1, 2);
