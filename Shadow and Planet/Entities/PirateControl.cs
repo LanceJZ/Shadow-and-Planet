@@ -14,7 +14,7 @@ namespace Shadow_and_Planet.Entities
 
     public class PirateControl : GameComponent, IBeginable, IUpdateableComponent, ILoadContent
     {
-        Player PlayerRef;
+        GameLogic GameLogicRef;
         public List<Pirate> Pirates;
         List<Mod> PirateRadar;
         List<LavaLamp> LavaLamps;
@@ -25,9 +25,9 @@ namespace Shadow_and_Planet.Entities
 
         SoundEffect LavaLampSound;
 
-        public PirateControl(Game game, Player player) : base(game)
+        public PirateControl(Game game, GameLogic gameLogic) : base(game)
         {
-            PlayerRef = player;
+            GameLogicRef = gameLogic;
             Pirates = new List<Pirate>();
             PirateRadar = new List<Mod>();
             LavaLamps = new List<LavaLamp>();
@@ -51,8 +51,8 @@ namespace Shadow_and_Planet.Entities
 
         public void LoadContent()
         {
-            PirateRadarModel = PlayerRef.Load("core/cube");
-            LavaLampSound = PlayerRef.LoadSoundEffect("LavaLampDrop");
+            PirateRadarModel = GameLogicRef.PlayerRef.Load("core/cube");
+            LavaLampSound = GameLogicRef.PlayerRef.LoadSoundEffect("LavaLampDrop");
         }
 
         public override void Update(GameTime gameTime)
@@ -67,7 +67,7 @@ namespace Shadow_and_Planet.Entities
                     PiratesActive++;
             }
 
-            if (PlayerRef.Chests + 1 > PiratesActive)
+            if (GameLogicRef.PlayerRef.Chests + 1 > PiratesActive)
                 SpawnPirate();
 
             base.Update(gameTime);
@@ -157,14 +157,14 @@ namespace Shadow_and_Planet.Entities
                         SpawnLavaLamp(Pirates[i].Position);
                 }
 
-                if (PlayerRef.Active)
+                if (GameLogicRef.PlayerRef.Active)
                 {
                     if (Pirates[i].Active)
                     {
-                        Vector3 offset = PlayerRef.VelocityFromVectors(PlayerRef.Position,
-                            Pirates[i].Position, 60);
+                        Vector3 offset = GameLogicRef.PlayerRef.VelocityFromVectors(
+                            GameLogicRef.PlayerRef.Position, Pirates[i].Position, 60);
                         offset.Z = 250;
-                        PirateRadar[i].Position = PlayerRef.Position + offset;
+                        PirateRadar[i].Position = GameLogicRef.PlayerRef.Position + offset;
                     }
                 }
                 else
@@ -176,9 +176,9 @@ namespace Shadow_and_Planet.Entities
                     }
                 }
 
-                if (Pirates[i].CheckMissileHit(PlayerRef))
+                if (Pirates[i].CheckMissileHit(GameLogicRef.PlayerRef))
                 {
-                    PlayerRef.Hit = true;
+                    GameLogicRef.PlayerRef.Hit = true;
                 }
             }
 
@@ -219,7 +219,7 @@ namespace Shadow_and_Planet.Entities
 
             if (spawnNew)
             {
-                Pirates.Add(new Pirate(Game, PlayerRef));
+                Pirates.Add(new Pirate(Game, GameLogicRef.PlayerRef));
                 ActivatePirateRadar();
             }
 
@@ -281,7 +281,7 @@ namespace Shadow_and_Planet.Entities
 
             if (spawnNew)
             {
-                Chests.Add(new Chest(Game, PlayerRef));
+                Chests.Add(new Chest(Game, GameLogicRef.PlayerRef));
             }
 
             Chests[freeChest].Position = position;

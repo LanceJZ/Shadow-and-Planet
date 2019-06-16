@@ -24,7 +24,7 @@ namespace Shadow_and_Planet.Entities
         SoundEffect UnDockSound;
         SoundEffect ShotHitSound;
 
-        Base BaseRef;
+        GameLogic GameLogicRef;
         Numbers OreCollected;
         Numbers Score;
         Numbers Health;
@@ -60,9 +60,9 @@ namespace Shadow_and_Planet.Entities
         int HitPoints;
         bool Docked;
 
-        public Player(Game game, Base theBase) : base(game)
+        public Player(Game game, GameLogic gameLogic) : base(game)
         {
-            BaseRef = theBase;
+            GameLogicRef = gameLogic;
             OreCollected = new Numbers(game);
             Score = new Numbers(game);
             Health = new Numbers(game);
@@ -149,13 +149,13 @@ namespace Shadow_and_Planet.Entities
             {
                 if (HitPoints < 1)
                 {
-                    if (BaseRef.OreOnBase < 15)
+                    if (GameLogicRef.BaseRef.OreOnBase < 15)
                     {
                         Dead();
                     }
                     else
                     {
-                        BaseRef.NewShip();
+                        GameLogicRef.BaseRef.NewShip();
                         Reset();
                     }
                 }
@@ -178,7 +178,7 @@ namespace Shadow_and_Planet.Entities
                     if (DockTimer.Expired)
                     {
                         UnDockSound.Play();
-                        BaseRef.LoadOre(OreinHold);
+                        GameLogicRef.BaseRef.LoadOre(OreinHold);
                         OreinHold = 0;
                         OreCollected.ChangeNumber(OreinHold);
                         Docked = false;
@@ -203,12 +203,13 @@ namespace Shadow_and_Planet.Entities
 
                 if (!Docked)
                 {
-                    Vector3 offset = VelocityFromVectors(Position, BaseRef.Position, 40);
+                    Vector3 offset = VelocityFromVectors(Position,
+                        GameLogicRef.BaseRef.Position, 40);
                     offset.Z = 250;
                     BaseRadar.Position = Position + offset;
                 }
 
-                BaseRef.Update(gameTime);
+                GameLogicRef.BaseRef.Update(gameTime);
             }
         }
 
@@ -234,7 +235,7 @@ namespace Shadow_and_Planet.Entities
             Reset();
             Active = true;
             BaseRadar.Active = true;
-            BaseRef.OreOnBase = 0;
+            GameLogicRef.BaseRef.OreOnBase = 0;
             OreinHold = 0;
             OreCollected.ChangeNumber(OreinHold);
             Chests = 0;
@@ -407,7 +408,7 @@ namespace Shadow_and_Planet.Entities
         {
             if (OreinHold > 0)
             {
-                if (CirclesIntersect(BaseRef))
+                if (CirclesIntersect(GameLogicRef.BaseRef))
                 {
                     DockSound.Play();
                     Docked = true;

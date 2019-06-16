@@ -17,19 +17,21 @@ namespace Shadow_and_Planet.Entities
         List<Asteroid> Asteroids;
         List<Chunk> Chunks;
         List<Mod> RockRadar;
+        GameLogic GameLogicRef;
         Player PlayerRef;
         PirateControl PiratesRef;
 
         XnaModel RockRadarModel;
 
-        public AsteroidControl(Game game, Player player, PirateControl pirate) : base(game)
+        public AsteroidControl(Game game, GameLogic gameLogic) : base(game)
         {
             Asteroids = new List<Asteroid>();
             Chunks = new List<Chunk>();
             RockRadar = new List<Mod>();
 
-            PlayerRef = player;
-            PiratesRef = pirate;
+            GameLogicRef = gameLogic;
+            PlayerRef = gameLogic.PlayerRef;
+            PiratesRef = gameLogic.PirirateRef;
 
             game.Components.Add(this);
         }

@@ -9,9 +9,7 @@ using Engine;
 
 namespace Shadow_and_Planet.Entities
 {
-    using Mod = AModel;
-
-    public class ExplodeParticle : Mod
+    public class ExplodeParticle : AModel
     {
         Timer LifeTimer;
 
@@ -30,7 +28,7 @@ namespace Shadow_and_Planet.Entities
 
         public override void LoadContent()
         {
-            LoadModel("Cube");
+            LoadModel("Core/Cube");
         }
 
         public override void BeginRun()

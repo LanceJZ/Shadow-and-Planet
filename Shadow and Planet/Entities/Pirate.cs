@@ -124,7 +124,7 @@ namespace Shadow_and_Planet.Entities
             Acceleration = Vector3.Zero;
             Velocity = (Velocity * 0.1f) * -1;
             Velocity += velocity * 0.75f;
-            Velocity += VelocityFromVectors(position, Position, 75);
+            Velocity += VelocityFromVectors(position, 75);
             RotationVelocity.Z = Services.RandomMinMax(-MathHelper.PiOver4, MathHelper.PiOver4);
             RotationVelocity.X = Services.RandomMinMax(-MathHelper.PiOver4, MathHelper.PiOver4);
             RotationVelocity.Y = Services.RandomMinMax(-MathHelper.PiOver4, MathHelper.PiOver4);

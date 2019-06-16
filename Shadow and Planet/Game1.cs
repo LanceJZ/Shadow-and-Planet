@@ -1,14 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 using XnaModel = Microsoft.Xna.Framework.Graphics.Model;
-using Shadow_and_Planet.Entities;
 using Engine;
 
 namespace Shadow_and_Planet
 {
-    using PO = PositionedObject;
     using GameServices = Services;
     /// <summary>
     /// This is the main type for your game.
@@ -18,22 +15,7 @@ namespace Shadow_and_Planet
         GraphicsDeviceManager Graphics;
         SpriteBatch SpriteBatch;
 
-        Player ThePlayer;
-        Base TheBase;
-        Background TheBackground;
-        AsteroidControl Asteroids;
-        PirateControl Pirates;
-
-        Words StartGameText;
-        Words InstructionText1;
-        Words InstructionText2;
-        Words InstructionText3;
-        Words InstructionText4;
-
-        Song BackgroundMusic;
-
-        bool BackgroundSongPlaying;
-        bool BackgroundSongOn;
+        GameLogic TheGame;
 
         public Game1() //TODO: Move none setup code to separate class.
         {
@@ -50,17 +32,7 @@ namespace Shadow_and_Planet
             IsFixedTimeStep = false;
             Content.RootDirectory = "Content";
 
-            TheBase = new Base(this);
-            ThePlayer = new Player(this, TheBase);
-            Pirates = new PirateControl(this, ThePlayer);
-            TheBackground = new Background(this);
-            Asteroids = new AsteroidControl(this, ThePlayer, Pirates);
-
-            StartGameText = new Words(this);
-            InstructionText1 = new Words(this);
-            InstructionText2 = new Words(this);
-            InstructionText3 = new Words(this);
-            InstructionText4 = new Words(this);
+            TheGame = new GameLogic(this);
         }
 
         private void SetMultiSampling(object sender, PreparingDeviceSettingsEventArgs eventArgs)
@@ -77,8 +49,6 @@ namespace Shadow_and_Planet
         /// </summary>
         protected override void Initialize()
         {
-            BackgroundSongPlaying = false;
-            BackgroundSongOn = true;
             // Positive Y is Up. Positive X is Right.
             GameServices.Initialize(Graphics, this, new Vector3(0, 0, 500), 0, 1000);
             // Setup lighting.
@@ -116,18 +86,6 @@ namespace Shadow_and_Planet
         {
             GameServices.BeginRun(); //This only happens once in a game.
 
-            Vector3 pos = new Vector3(-210, 80, 150);
-            Vector3 pos1 = new Vector3(-210, 240, 150);
-            Vector3 pos2 = new Vector3(-210, 200, 150);
-            Vector3 pos3 = new Vector3(-210, 160, 150);
-            Vector3 pos4 = new Vector3(-300, -120, 150);
-
-            StartGameText.ProcessWords("ANY KEY TO START GAME", pos, 2);
-            InstructionText1.ProcessWords("L AND R TO TURN SHIP", pos1, 2);
-            InstructionText2.ProcessWords("UP TO THRUST LCTRL TO FIRE", pos2, 2);
-            InstructionText3.ProcessWords("LSHIFT TO FIRE MISSILE", pos3, 2);
-            InstructionText4.ProcessWords("COLLECT CHEST TO GAIN MISSILE", pos4, 2);
-
             base.BeginRun();
         }
 
@@ -141,59 +99,6 @@ namespace Shadow_and_Planet
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed ||
                 Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            if (!ThePlayer.Active)
-            {
-                StartGameText.ShowWords(true);
-                InstructionText1.ShowWords(true);
-                InstructionText2.ShowWords(true);
-                InstructionText3.ShowWords(true);
-                InstructionText4.ShowWords(true);
-
-                if (Keyboard.GetState().GetPressedKeys().Length > 0)
-                {
-                    ThePlayer.NewGame();
-                    Pirates.NewGame();
-                    Asteroids.NewGame();
-                    StartGameText.ShowWords(false);
-                    InstructionText1.ShowWords(false);
-                    InstructionText2.ShowWords(false);
-                    InstructionText3.ShowWords(false);
-                    InstructionText4.ShowWords(false);
-                }
-
-
-                if (BackgroundSongPlaying)
-                {
-                    //MediaPlayer.Stop();
-                    BackgroundSongPlaying = false;
-                }
-            }
-            else
-            {
-                if (!BackgroundSongPlaying && BackgroundSongOn)
-                {
-                    //MediaPlayer.Play(BackgroundMusic);
-                    //MediaPlayer.IsRepeating = true;
-                    BackgroundSongPlaying = true;
-                }
-                else
-                {
-                    if (Keyboard.GetState().IsKeyDown(Keys.O))
-                    {
-                        //MediaPlayer.Stop();
-                        BackgroundSongPlaying = false;
-                        BackgroundSongOn = false;
-                    }
-
-                    if (Keyboard.GetState().IsKeyDown(Keys.M))
-                    {
-                        BackgroundSongOn = true;
-                    }
-                }
-            }
-
-            // TODO: Add your update logic here
 
             base.Update(gameTime);
         }

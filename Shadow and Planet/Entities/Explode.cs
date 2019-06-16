@@ -9,8 +9,6 @@ using Engine;
 
 namespace Shadow_and_Planet.Entities
 {
-    using Mod = Engine.AModel;
-
     public class Explode : GameComponent, IBeginable, IUpdateableComponent, ILoadContent
     {
         List<ExplodeParticle> Particles;
